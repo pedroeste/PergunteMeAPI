@@ -15,7 +15,5 @@ namespace WebAPI.Models
         public string phone { get; set; }
         public bool isAdmin { get; set; }
         public bool isActive { get; set; }
-
-        public ICollection<SubjectModel> Subjects { get; set; }
     }
 }

@@ -14,6 +14,7 @@ namespace WebAPI.Models
         public string name { get; set; }
         public int courseId { get; set; }
 
-        //public ICollection<UserModel> User { get; set; }
+        [ForeignKey("courseId")]
+        public virtual CourseModel Course { get; set; }
     }
 }
