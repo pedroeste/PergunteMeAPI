@@ -9,7 +9,8 @@ namespace WebAPI.Models
     public class UserModel
     {
         [Key]
-        public long cpf { get; set; }
+        public int id { get; set; }
+        public string cpf { get; set; }
         public string name { get; set; }
         public string email { get; set; }
         public string phone { get; set; }

@@ -15,7 +15,7 @@ namespace WebAPI.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -56,9 +56,26 @@ namespace WebAPI.Migrations
 
                     b.HasIndex("schoolId");
 
+                    b.ToTable("CourseModel");
+                });
+
+            modelBuilder.Entity("WebAPI.Models.CourseSubjectModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("courseId");
+
+                    b.Property<int>("subjectId");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("courseId");
+
                     b.HasIndex("subjectId");
 
-                    b.ToTable("CourseModel");
+                    b.ToTable("CourseSubject");
                 });
 
             modelBuilder.Entity("WebAPI.Models.QuestionModel", b =>
@@ -67,21 +84,23 @@ namespace WebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("TestModelid");
-
                     b.Property<int>("alternativeId");
 
                     b.Property<string>("dificulty");
 
                     b.Property<string>("imgUrl");
 
+                    b.Property<int>("subjectId");
+
                     b.Property<string>("topic");
+
+                    b.Property<int>("userId");
 
                     b.HasKey("id");
 
-                    b.HasIndex("TestModelid");
-
                     b.HasIndex("alternativeId");
+
+                    b.HasIndex("subjectId");
 
                     b.ToTable("QuestionModel");
                 });
@@ -105,15 +124,9 @@ namespace WebAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<long?>("UserModelcpf");
-
-                    b.Property<int>("courseId");
-
                     b.Property<string>("name");
 
                     b.HasKey("id");
-
-                    b.HasIndex("UserModelcpf");
 
                     b.ToTable("SubjectModel");
                 });
@@ -133,11 +146,32 @@ namespace WebAPI.Migrations
                     b.ToTable("TestModel");
                 });
 
-            modelBuilder.Entity("WebAPI.Models.UserModel", b =>
+            modelBuilder.Entity("WebAPI.Models.TestQuestionModel", b =>
                 {
-                    b.Property<long>("cpf")
+                    b.Property<int>("id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("questionId");
+
+                    b.Property<int>("testId");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("questionId");
+
+                    b.HasIndex("testId");
+
+                    b.ToTable("TestQuestion");
+                });
+
+            modelBuilder.Entity("WebAPI.Models.UserModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("cpf");
 
                     b.Property<string>("email");
 
@@ -149,9 +183,28 @@ namespace WebAPI.Migrations
 
                     b.Property<string>("phone");
 
-                    b.HasKey("cpf");
+                    b.HasKey("id");
 
                     b.ToTable("UserModel");
+                });
+
+            modelBuilder.Entity("WebAPI.Models.UserSubjectModel", b =>
+                {
+                    b.Property<int>("id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("subjectId");
+
+                    b.Property<int>("userId");
+
+                    b.HasKey("id");
+
+                    b.HasIndex("subjectId");
+
+                    b.HasIndex("userId");
+
+                    b.ToTable("UserSubject");
                 });
 
             modelBuilder.Entity("WebAPI.Models.CourseModel", b =>
@@ -159,6 +212,14 @@ namespace WebAPI.Migrations
                     b.HasOne("WebAPI.Models.SchoolModel", "School")
                         .WithMany()
                         .HasForeignKey("schoolId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("WebAPI.Models.CourseSubjectModel", b =>
+                {
+                    b.HasOne("WebAPI.Models.CourseModel", "Course")
+                        .WithMany()
+                        .HasForeignKey("courseId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("WebAPI.Models.SubjectModel", "Subject")
@@ -169,21 +230,41 @@ namespace WebAPI.Migrations
 
             modelBuilder.Entity("WebAPI.Models.QuestionModel", b =>
                 {
-                    b.HasOne("WebAPI.Models.TestModel")
-                        .WithMany("Questions")
-                        .HasForeignKey("TestModelid");
-
                     b.HasOne("WebAPI.Models.AlternativeModel", "Alternative")
                         .WithMany()
                         .HasForeignKey("alternativeId")
                         .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WebAPI.Models.SubjectModel", "Subject")
+                        .WithMany()
+                        .HasForeignKey("subjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("WebAPI.Models.SubjectModel", b =>
+            modelBuilder.Entity("WebAPI.Models.TestQuestionModel", b =>
                 {
-                    b.HasOne("WebAPI.Models.UserModel")
-                        .WithMany("Subjects")
-                        .HasForeignKey("UserModelcpf");
+                    b.HasOne("WebAPI.Models.QuestionModel", "Question")
+                        .WithMany()
+                        .HasForeignKey("questionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WebAPI.Models.TestModel", "Test")
+                        .WithMany()
+                        .HasForeignKey("testId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("WebAPI.Models.UserSubjectModel", b =>
+                {
+                    b.HasOne("WebAPI.Models.SubjectModel", "Subject")
+                        .WithMany()
+                        .HasForeignKey("subjectId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("WebAPI.Models.UserModel", "User")
+                        .WithMany()
+                        .HasForeignKey("userId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

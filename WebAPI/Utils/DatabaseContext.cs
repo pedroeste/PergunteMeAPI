@@ -18,5 +18,8 @@ namespace WebAPI.Utils
         public DbSet<QuestionModel> QuestionModel { get; set; }
         public DbSet<AlternativeModel> AlternativeModel { get; set; }
         public DbSet<TestModel> TestModel { get; set; }
+        public DbSet<UserSubjectModel> UserSubject { get; set; }
+        public DbSet<CourseSubjectModel> CourseSubject { get; set; }
+        public DbSet<TestQuestionModel> TestQuestion { get; set; }
     }
 }

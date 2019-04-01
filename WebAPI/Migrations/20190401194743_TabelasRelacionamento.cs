@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace WebAPI.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class TabelasRelacionamento : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -39,6 +39,19 @@ namespace WebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "SubjectModel",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SubjectModel", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "TestModel",
                 columns: table => new
                 {
@@ -56,8 +69,9 @@ namespace WebAPI.Migrations
                 name: "UserModel",
                 columns: table => new
                 {
-                    cpf = table.Column<long>(nullable: false)
+                    id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    cpf = table.Column<string>(nullable: true),
                     name = table.Column<string>(nullable: true),
                     email = table.Column<string>(nullable: true),
                     phone = table.Column<string>(nullable: true),
@@ -66,57 +80,7 @@ namespace WebAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserModel", x => x.cpf);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "QuestionModel",
-                columns: table => new
-                {
-                    id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    imgUrl = table.Column<string>(nullable: true),
-                    topic = table.Column<string>(nullable: true),
-                    dificulty = table.Column<string>(nullable: true),
-                    alternativeId = table.Column<int>(nullable: false),
-                    TestModelid = table.Column<int>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_QuestionModel", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_QuestionModel_TestModel_TestModelid",
-                        column: x => x.TestModelid,
-                        principalTable: "TestModel",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_QuestionModel_AlternativeModel_alternativeId",
-                        column: x => x.alternativeId,
-                        principalTable: "AlternativeModel",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "SubjectModel",
-                columns: table => new
-                {
-                    id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    name = table.Column<string>(nullable: true),
-                    courseId = table.Column<int>(nullable: false),
-                    UserModelcpf = table.Column<long>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_SubjectModel", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_SubjectModel_UserModel_UserModelcpf",
-                        column: x => x.UserModelcpf,
-                        principalTable: "UserModel",
-                        principalColumn: "cpf",
-                        onDelete: ReferentialAction.Restrict);
+                    table.PrimaryKey("PK_UserModel", x => x.id);
                 });
 
             migrationBuilder.CreateTable(
@@ -138,10 +102,112 @@ namespace WebAPI.Migrations
                         principalTable: "SchoolModel",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "QuestionModel",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    imgUrl = table.Column<string>(nullable: true),
+                    topic = table.Column<string>(nullable: true),
+                    dificulty = table.Column<string>(nullable: true),
+                    alternativeId = table.Column<int>(nullable: false),
+                    subjectId = table.Column<int>(nullable: false),
+                    userId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_QuestionModel", x => x.id);
                     table.ForeignKey(
-                        name: "FK_CourseModel_SubjectModel_subjectId",
+                        name: "FK_QuestionModel_AlternativeModel_alternativeId",
+                        column: x => x.alternativeId,
+                        principalTable: "AlternativeModel",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_QuestionModel_SubjectModel_subjectId",
                         column: x => x.subjectId,
                         principalTable: "SubjectModel",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserSubject",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    userId = table.Column<int>(nullable: false),
+                    subjectId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserSubject", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_UserSubject_SubjectModel_subjectId",
+                        column: x => x.subjectId,
+                        principalTable: "SubjectModel",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_UserSubject_UserModel_userId",
+                        column: x => x.userId,
+                        principalTable: "UserModel",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CourseSubject",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    courseId = table.Column<int>(nullable: false),
+                    subjectId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CourseSubject", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_CourseSubject_CourseModel_courseId",
+                        column: x => x.courseId,
+                        principalTable: "CourseModel",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_CourseSubject_SubjectModel_subjectId",
+                        column: x => x.subjectId,
+                        principalTable: "SubjectModel",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TestQuestion",
+                columns: table => new
+                {
+                    id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    testId = table.Column<int>(nullable: false),
+                    questionId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TestQuestion", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_TestQuestion_QuestionModel_questionId",
+                        column: x => x.questionId,
+                        principalTable: "QuestionModel",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TestQuestion_TestModel_testId",
+                        column: x => x.testId,
+                        principalTable: "TestModel",
                         principalColumn: "id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -152,14 +218,14 @@ namespace WebAPI.Migrations
                 column: "schoolId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_CourseModel_subjectId",
-                table: "CourseModel",
-                column: "subjectId");
+                name: "IX_CourseSubject_courseId",
+                table: "CourseSubject",
+                column: "courseId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuestionModel_TestModelid",
-                table: "QuestionModel",
-                column: "TestModelid");
+                name: "IX_CourseSubject_subjectId",
+                table: "CourseSubject",
+                column: "subjectId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_QuestionModel_alternativeId",
@@ -167,13 +233,42 @@ namespace WebAPI.Migrations
                 column: "alternativeId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SubjectModel_UserModelcpf",
-                table: "SubjectModel",
-                column: "UserModelcpf");
+                name: "IX_QuestionModel_subjectId",
+                table: "QuestionModel",
+                column: "subjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TestQuestion_questionId",
+                table: "TestQuestion",
+                column: "questionId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_TestQuestion_testId",
+                table: "TestQuestion",
+                column: "testId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserSubject_subjectId",
+                table: "UserSubject",
+                column: "subjectId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserSubject_userId",
+                table: "UserSubject",
+                column: "userId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "CourseSubject");
+
+            migrationBuilder.DropTable(
+                name: "TestQuestion");
+
+            migrationBuilder.DropTable(
+                name: "UserSubject");
+
             migrationBuilder.DropTable(
                 name: "CourseModel");
 
@@ -181,19 +276,19 @@ namespace WebAPI.Migrations
                 name: "QuestionModel");
 
             migrationBuilder.DropTable(
-                name: "SchoolModel");
-
-            migrationBuilder.DropTable(
-                name: "SubjectModel");
-
-            migrationBuilder.DropTable(
                 name: "TestModel");
+
+            migrationBuilder.DropTable(
+                name: "UserModel");
+
+            migrationBuilder.DropTable(
+                name: "SchoolModel");
 
             migrationBuilder.DropTable(
                 name: "AlternativeModel");
 
             migrationBuilder.DropTable(
-                name: "UserModel");
+                name: "SubjectModel");
         }
     }
 }

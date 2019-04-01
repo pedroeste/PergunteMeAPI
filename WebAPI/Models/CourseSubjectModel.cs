@@ -7,15 +7,16 @@ using System.Threading.Tasks;
 
 namespace WebAPI.Models
 {
-    public class CourseModel
+    public class CourseSubjectModel
     {
         [Key]
         public int id { get; set; }
-        public string name { get; set; }
+        public int courseId { get; set; }
         public int subjectId { get; set; }
-        public int schoolId { get; set; }
 
-        [ForeignKey("schoolId")]
-        public virtual SchoolModel School { get; set; } // virtual       
+        [ForeignKey("courseId")]
+        public virtual CourseModel Course { get; set; }
+        [ForeignKey("subjectId")]
+        public virtual SubjectModel Subject { get; set; }
     }
 }

@@ -12,9 +12,5 @@ namespace WebAPI.Models
         [Key]
         public int id { get; set; }
         public string name { get; set; }
-        public int courseId { get; set; }
-
-        [ForeignKey("courseId")]
-        public virtual CourseModel Course { get; set; }
     }
 }
