@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models;
 using WebAPI.Utils;
+using WebAPI.ViewModel;
 
 namespace WebAPI.Controllers
 {
@@ -36,7 +37,7 @@ namespace WebAPI.Controllers
 
         [HttpPost]
         [Route("create")]
-        public IActionResult Create(SubjectModel subject)
+        public IActionResult Create([FromBody] SubjectModel subject)
         {
             try
             {
@@ -66,7 +67,8 @@ namespace WebAPI.Controllers
             return new NoContentResult();
         }
 
-        [HttpPost("id)")]
+        [HttpPost]
+        [Route("delete/{id}")]
         public IActionResult Delete(int id)
         {
             var subject = _db.Subject.Find(id);
@@ -76,6 +78,33 @@ namespace WebAPI.Controllers
             _db.Subject.Remove(subject);
 
             return new NoContentResult();
+        }
+
+        [HttpPost]
+        [Route("vincularDisciplina")]
+        public IActionResult UserSubject([FromBody] UserSubjectViewModel userSubject)
+        {
+            UserSubjectModel userSubjectModel = new UserSubjectModel();
+            try
+            {
+                var user = _db.User.Find(userSubject.userId);
+
+                foreach (var id in userSubject.subjectsId)
+                {
+                    userSubjectModel.userId = user.id;
+
+                    userSubjectModel.subjectId = _db.Subject.Find(id).id;
+
+                    _db.UserSubject.Add(userSubjectModel);
+                    _db.SaveChanges();
+                }
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e);
+            }
+
+            return Ok(userSubjectModel);
         }
     }
 }
