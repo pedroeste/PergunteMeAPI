@@ -79,7 +79,7 @@ namespace WebAPI.Controllers
             subjectDb.name = subject.name;
             _db.Subject.Update(subjectDb);
 
-            return new NoContentResult();
+            return Ok("Updated");
         }
 
         [HttpPost]
@@ -91,8 +91,9 @@ namespace WebAPI.Controllers
             if (subject == null) return NotFound();
 
             _db.Subject.Remove(subject);
+            _db.SaveChanges();
 
-            return new NoContentResult();
+            return Ok(subject);
         }
 
         [HttpPost]
@@ -111,8 +112,8 @@ namespace WebAPI.Controllers
                     userSubjectModel.subjectId = _db.Subject.Find(id).id;
 
                     _db.UserSubject.Add(userSubjectModel);
-                    _db.SaveChanges();
                 }
+                _db.SaveChanges();
             }
             catch(Exception e)
             {

@@ -115,7 +115,7 @@ namespace WebAPI.Controllers
 
             _db.User.Remove(user);
 
-            return new NoContentResult();
+            return Ok("Deleted");
         }
     }
 }
