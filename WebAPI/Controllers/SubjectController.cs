@@ -35,6 +35,22 @@ namespace WebAPI.Controllers
             return Ok(subjects);
         }
 
+        [HttpGet]
+        public IActionResult Get(int id)
+        {
+            SubjectModel user = new SubjectModel();
+            try
+            {
+                user = _db.Subject.Find(id);
+            }
+            catch(Exception e)
+            {
+                return StatusCode(500, e);
+            }
+
+            return Ok(user);
+        }
+
         [HttpPost]
         [Route("create")]
         public IActionResult Create([FromBody] SubjectModel subject)

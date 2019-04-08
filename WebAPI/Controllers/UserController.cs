@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models;
 using WebAPI.Utils;
+using WebAPI.ViewModel;
 
 namespace WebAPI.Controllers
 {
@@ -33,6 +34,37 @@ namespace WebAPI.Controllers
             return Ok(users);
         }
 
+        [HttpGet("{id}")]
+        public IActionResult Get(int id)
+        {
+            TeacherModel teacher = new TeacherModel();
+
+            try
+            {
+                UserModel user = new UserModel();
+                user = _db.User.Find(id);
+                teacher.user = user;
+
+                List<UserSubjectModel> subjectList = _db.UserSubject.Where(s => s.userId == user.id).ToList();
+
+                List<SubjectModel> subjects = new List<SubjectModel>();
+
+                foreach(var subjectId in subjectList)
+                {
+                    SubjectModel subject = _db.Subject.Find(subjectId.subjectId);
+                    subjects.Add(subject);
+                }
+
+                teacher.subjects = subjects;
+            }
+            catch(Exception e)
+            {
+                return StatusCode(500, "Internal Server Error! Contact API supervisor!");
+            }
+
+            return Ok(teacher);
+        }
+
         [HttpPost]
         [Route("create")]
         public IActionResult Create([FromBody] UserModel user)
@@ -56,14 +88,22 @@ namespace WebAPI.Controllers
         {
             if (user == null || user.id != id) return BadRequest();
 
-            var userDb = _db.User.Find(id);
+            try
+            {
+                var userDb = _db.User.Find(id);
 
-            if (userDb == null) return NotFound();
+                if (userDb == null) return NotFound();
 
-            userDb = user;
-            _db.User.Update(userDb);
+                userDb = user;
+                _db.User.Update(userDb);
+                _db.SaveChanges();
 
-            return new NoContentResult();
+                return Ok(userDb);
+            }
+            catch(Exception e)
+            {
+                return StatusCode(500, e);
+            }            
         }
 
         [HttpPost("id)")]
