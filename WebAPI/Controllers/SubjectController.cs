@@ -19,7 +19,6 @@ namespace WebAPI.Controllers
             _db = db;
         }
 
-        [HttpGet]
         public IActionResult Get()
         {
             IEnumerable<SubjectModel> subjects;
@@ -35,7 +34,7 @@ namespace WebAPI.Controllers
             return Ok(subjects);
         }
 
-        [HttpGet]
+        [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
             SubjectModel user = new SubjectModel();
