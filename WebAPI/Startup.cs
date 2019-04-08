@@ -43,6 +43,8 @@ namespace WebAPI
                 options.AddPolicy(MyAllowSpecificOrigins, builder =>
                 {
                     builder.AllowAnyOrigin();
+                    builder.AllowAnyHeader();
+                    builder.AllowAnyMethod();
                 });
             });
 
