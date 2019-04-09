@@ -113,8 +113,8 @@ namespace WebAPI.Controllers
                     userSubjectModel.subjectId = subjectDb.id;
 
                     _db.UserSubject.Add(userSubjectModel);
+                    _db.SaveChanges();
                 }
-                _db.SaveChanges();
             }
             catch(Exception e)
             {
