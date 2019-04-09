@@ -106,7 +106,8 @@ namespace WebAPI.Controllers
             }            
         }
 
-        [HttpPost("id)")]
+        [HttpPost]
+        [Route("delete/{id}")]
         public IActionResult Delete(int id)
         {
             var user = _db.User.Find(id);

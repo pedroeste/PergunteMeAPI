@@ -108,8 +108,9 @@ namespace WebAPI.Controllers
                 foreach (var id in userSubject.subjectsId)
                 {
                     userSubjectModel.userId = user.id;
+                    var subjectDb = _db.Subject.Find(id);
 
-                    userSubjectModel.subjectId = _db.Subject.Find(id).id;
+                    userSubjectModel.subjectId = subjectDb.id;
 
                     _db.UserSubject.Add(userSubjectModel);
                 }
