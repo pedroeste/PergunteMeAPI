@@ -65,6 +65,7 @@ namespace WebAPI
             app.UseStaticFiles();
             app.UseCookiePolicy();
             app.UseCors(option => option.AllowAnyOrigin());
+            app.UseCors(option => option.AllowAnyMethod());
 
             app.UseMvc(routes =>
             {

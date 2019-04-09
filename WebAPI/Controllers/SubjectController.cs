@@ -100,13 +100,15 @@ namespace WebAPI.Controllers
         [Route("vincularDisciplina")]
         public IActionResult UserSubject([FromBody] UserSubjectViewModel userSubject)
         {
-            UserSubjectModel userSubjectModel = new UserSubjectModel();
+            
             try
             {
                 var user = _db.User.Find(userSubject.userId);
 
                 foreach (var id in userSubject.subjectsId)
                 {
+                    UserSubjectModel userSubjectModel = new UserSubjectModel();
+
                     userSubjectModel.userId = user.id;
                     var subjectDb = _db.Subject.Find(id);
 
@@ -115,13 +117,13 @@ namespace WebAPI.Controllers
                     _db.UserSubject.Add(userSubjectModel);
                     _db.SaveChanges();
                 }
+
+                return StatusCode(201);
             }
             catch(Exception e)
             {
                 return BadRequest(e);
-            }
-
-            return Ok(userSubjectModel);
+            }            
         }
     }
 }
