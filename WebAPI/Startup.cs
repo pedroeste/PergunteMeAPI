@@ -22,8 +22,6 @@ namespace WebAPI
             Configuration = configuration;
         }
 
-        readonly string MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
-
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -39,18 +37,13 @@ namespace WebAPI
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
-            services.AddCors();
-
-
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-            services.Configure<MvcOptions>(options => {
-                options.Filters.Add(new CorsAuthorizationFilterFactory("AllowSpecificOrigin"));
-            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseOptions();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -64,8 +57,6 @@ namespace WebAPI
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
-            app.UseCors(option => option.AllowAnyOrigin());
-            app.UseCors(option => option.AllowAnyMethod());
 
             app.UseMvc(routes =>
             {
