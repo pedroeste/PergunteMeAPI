@@ -19,6 +19,7 @@ namespace WebAPI
 
         public static IWebHostBuilder CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
+                .UseUrls("http://localhost:5050")
                 .UseStartup<Startup>();
     }
 }
