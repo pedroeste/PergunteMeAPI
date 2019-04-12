@@ -37,14 +37,19 @@ namespace WebAPI
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
 
+            services.AddCors();
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            app.UseOptions();
-            app.UseCors();
+            //app.UseOptions();
+            app.UseCors(options => {
+                options.AllowAnyOrigin();
+                options.AllowAnyMethod();
+            });
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
