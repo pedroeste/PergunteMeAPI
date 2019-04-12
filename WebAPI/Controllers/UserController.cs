@@ -83,26 +83,22 @@ namespace WebAPI.Controllers
             return Ok(user);
         }
 
-        [HttpPost("{id}")]
-        public IActionResult Update(int id, [FromBody] UserModel user)
+        [HttpPost]
+        [Route("update")]
+        public IActionResult Update([FromBody] UserModel user)
         {
-            if (user == null || user.id != id) return BadRequest();
+            if (user == null || user.id == 0) return BadRequest();
 
             try
             {
-                var userDb = _db.User.Find(id);
-
-                if (userDb == null) return NotFound();
-
-                userDb = user;
-                _db.User.Update(userDb);
+                _db.User.Update(user);
                 _db.SaveChanges();
 
-                return Ok(userDb);
+                return Ok(user);
             }
             catch(Exception e)
             {
-                return StatusCode(500, e);
+                return BadRequest(e);
             }            
         }
 
@@ -110,7 +106,7 @@ namespace WebAPI.Controllers
         [Route("delete/{id}")]
         public IActionResult Delete(int id)
         {
-            var user = _db.User.Find(id);
+            UserModel user = _db.User.Find(id);
 
             if (user == null) return NotFound();
 
