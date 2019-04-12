@@ -44,6 +44,7 @@ namespace WebAPI
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             app.UseOptions();
+            app.UseCors();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
