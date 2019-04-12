@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
 using WebAPI.Utils;
 using WebAPI.ViewModel;
@@ -103,16 +104,17 @@ namespace WebAPI.Controllers
             
             try
             {
-                var user = _db.User.Find(userSubject.userId);
+                SubjectModel subject = _db.Subject.Find(userSubject.subjectId);
 
-                foreach (var id in userSubject.subjectsId)
+                foreach (var id in userSubject.usersId)
                 {
                     UserSubjectModel userSubjectModel = new UserSubjectModel();
 
-                    userSubjectModel.userId = user.id;
-                    var subjectDb = _db.Subject.Find(id);
+                    userSubjectModel.subjectId = subject.id;
 
-                    userSubjectModel.subjectId = subjectDb.id;
+                    var userDb = _db.User.Find(id);
+
+                    userSubjectModel.userId = userDb.id;
 
                     _db.UserSubject.Add(userSubjectModel);
                     _db.SaveChanges();
@@ -124,6 +126,35 @@ namespace WebAPI.Controllers
             {
                 return BadRequest(e);
             }            
+        }
+
+        [HttpPost]
+        [Route("vincularCourseSubject")]
+        public IActionResult CourseSubject([FromBody] CourseSubjectViewModel courseSubject)
+        {
+            try
+            {
+                SubjectModel subject = _db.Subject.Find(courseSubject.subjectId);
+
+                foreach(var id in courseSubject.coursesId)
+                {
+                    CourseSubjectModel courseSubjectModel = new CourseSubjectModel();
+
+                    courseSubjectModel.subjectId = subject.id;
+                    var courseDb = _db.Course.Include(s => s.School).Where(c => c.id == id).FirstOrDefault();
+
+                    courseSubjectModel.courseId = courseDb.id;
+
+                    _db.CourseSubject.Add(courseSubjectModel);
+                    _db.SaveChanges();
+                }
+
+                return StatusCode(201);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e);
+            }
         }
     }
 }

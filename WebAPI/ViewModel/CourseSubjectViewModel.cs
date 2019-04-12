@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace WebAPI.ViewModel
 {
-    public class UserSubjectViewModel
+    public class CourseSubjectViewModel
     {
-        public IEnumerable<int> usersId { get; set; }
         public int subjectId { get; set; }
+        public IEnumerable<int> coursesId { get; set; }
     }
 }

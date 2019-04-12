@@ -12,7 +12,6 @@ namespace WebAPI.Models
         [Key]
         public int id { get; set; }
         public string name { get; set; }
-        public int subjectId { get; set; }
         public int schoolId { get; set; }
 
         [ForeignKey("schoolId")]
