@@ -8,6 +8,6 @@ namespace WebAPI.ViewModel
     public class UserSubjectViewModel
     {
         public IEnumerable<int> usersId { get; set; }
-        public int subjectId { get; set; }
+        public IEnumerable<int> subjectsId { get; set; }
     }
 }

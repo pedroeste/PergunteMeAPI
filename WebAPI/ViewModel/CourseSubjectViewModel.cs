@@ -7,7 +7,7 @@ namespace WebAPI.ViewModel
 {
     public class CourseSubjectViewModel
     {
-        public int subjectId { get; set; }
+        public IEnumerable<int> subjectsId { get; set; }
         public IEnumerable<int> coursesId { get; set; }
     }
 }

@@ -104,21 +104,27 @@ namespace WebAPI.Controllers
             
             try
             {
-                SubjectModel subject = _db.Subject.Find(userSubject.subjectId);
-
-                foreach (var id in userSubject.usersId)
+                
+                foreach(var subjectId in userSubject.subjectsId)
                 {
-                    UserSubjectModel userSubjectModel = new UserSubjectModel();
+                    SubjectModel subject = _db.Subject.Find(subjectId);
 
-                    userSubjectModel.subjectId = subject.id;
+                    foreach (var userId in userSubject.usersId)
+                    {
+                        UserSubjectModel userSubjectModel = new UserSubjectModel();
 
-                    var userDb = _db.User.Find(id);
+                        userSubjectModel.subjectId = subject.id;
 
-                    userSubjectModel.userId = userDb.id;
+                        var userDb = _db.User.Find(userId);
 
-                    _db.UserSubject.Add(userSubjectModel);
-                    _db.SaveChanges();
+                        userSubjectModel.userId = userDb.id;
+
+                        _db.UserSubject.Add(userSubjectModel);
+                        _db.SaveChanges();
+                    }
                 }
+
+                
 
                 return StatusCode(201);
             }
@@ -134,20 +140,25 @@ namespace WebAPI.Controllers
         {
             try
             {
-                SubjectModel subject = _db.Subject.Find(courseSubject.subjectId);
-
-                foreach(var id in courseSubject.coursesId)
+                foreach(var subjecId in courseSubject.subjectsId)
                 {
-                    CourseSubjectModel courseSubjectModel = new CourseSubjectModel();
+                    SubjectModel subject = _db.Subject.Find(subjecId);
 
-                    courseSubjectModel.subjectId = subject.id;
-                    var courseDb = _db.Course.Include(s => s.School).Where(c => c.id == id).FirstOrDefault();
+                    foreach (var courseId in courseSubject.coursesId)
+                    {
+                        CourseSubjectModel courseSubjectModel = new CourseSubjectModel();
 
-                    courseSubjectModel.courseId = courseDb.id;
+                        courseSubjectModel.subjectId = subject.id;
+                        var courseDb = _db.Course.Include(s => s.School).Where(c => c.id == courseId).FirstOrDefault();
 
-                    _db.CourseSubject.Add(courseSubjectModel);
-                    _db.SaveChanges();
+                        courseSubjectModel.courseId = courseDb.id;
+
+                        _db.CourseSubject.Add(courseSubjectModel);
+                        _db.SaveChanges();
+                    }
                 }
+
+                
 
                 return StatusCode(201);
             }
