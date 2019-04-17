@@ -11,12 +11,12 @@ namespace WebAPI.Models
     {
         [Key]
         public int id { get; set; }
+        public string question { get; set; }
         public string imgUrl { get; set; } // Azure Blob
         public string topic { get; set; }
         public string  dificulty { get; set; }
         public int alternativeId { get; set; }
         public int subjectId { get; set; }
-        public int userId { get; set; }
 
         [ForeignKey("alternativeId")]
         public virtual AlternativeModel Alternative { get; set; }
