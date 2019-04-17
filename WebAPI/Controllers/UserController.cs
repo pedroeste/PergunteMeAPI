@@ -110,7 +110,15 @@ namespace WebAPI.Controllers
 
             if (user == null) return NotFound();
 
-            _db.User.Remove(user);
+            try
+            {
+                _db.User.Remove(user);
+                _db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
 
             return Ok("Deleted");
         }

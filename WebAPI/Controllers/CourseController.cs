@@ -94,7 +94,15 @@ namespace WebAPI.Controllers
 
             if (course == null) return NotFound();
 
-            _db.Course.Remove(course);
+            try
+            {
+                _db.Course.Remove(course);
+                _db.SaveChanges();
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e);
+            }
 
             return Ok("Deleted");
         }

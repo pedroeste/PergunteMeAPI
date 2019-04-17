@@ -68,17 +68,20 @@ namespace WebAPI.Controllers
             return Ok(subject);
         }
 
-        [HttpPost("{id}")]
-        public IActionResult Update(int id, [FromBody] SubjectModel subject)
+        [HttpPost("update")]
+        public IActionResult Update([FromBody] SubjectModel subject)
         {
-            if (subject == null || subject.id != id) return BadRequest();
+            if (subject == null || subject.id != subject.id) return BadRequest();
 
-            var subjectDb = _db.Subject.Find(id);
-
-            if (subjectDb == null) return NotFound();
-
-            subjectDb.name = subject.name;
-            _db.Subject.Update(subjectDb);
+            try
+            {
+                subject.name = subject.name;
+                _db.Subject.Update(subject);
+            }
+            catch(Exception e)
+            {
+                return BadRequest(e);
+            }
 
             return Ok("Updated");
         }
@@ -91,8 +94,15 @@ namespace WebAPI.Controllers
 
             if (subject == null) return NotFound();
 
-            _db.Subject.Remove(subject);
-            _db.SaveChanges();
+            try
+            {
+                _db.Subject.Remove(subject);
+                _db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
 
             return Ok(subject);
         }

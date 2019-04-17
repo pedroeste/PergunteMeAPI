@@ -70,6 +70,8 @@ namespace WebAPI.Controllers
         [Route("update")]
         public IActionResult Update([FromBody] SchoolModel school)
         {
+            if (school == null || school.id == 0) return BadRequest();
+
             try
             {
                 _db.School.Update(school);
@@ -91,7 +93,15 @@ namespace WebAPI.Controllers
 
             if (school == null) return NotFound();
 
-            _db.School.Remove(school);
+            try
+            {
+                _db.School.Remove(school);
+                _db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e);
+            }
 
             return Ok("Deleted");
         }
