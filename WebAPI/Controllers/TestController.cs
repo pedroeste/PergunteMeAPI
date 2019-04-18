@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Models;
 using WebAPI.Utils;
+using WebAPI.ViewModel;
 
 namespace WebAPI.Controllers
 {
@@ -37,17 +38,29 @@ namespace WebAPI.Controllers
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
-            TestModel test;
+            FinalTestViewModel finalTest = new FinalTestViewModel();
             try
             {
-                test = _db.Test.Find(id);
+                var test = _db.Test.Find(id);
+                finalTest.test = test;
+
+                List<TestQuestionModel> testQuestions = _db.TestQuestion.Where(t => t.testId == id).ToList();
+
+                List<QuestionModel> questions = new List<QuestionModel>();
+                foreach (var question in testQuestions)
+                {
+                    QuestionModel quest = _db.Question.Find(question.questionId);
+                    questions.Add(quest);
+                }
+
+                finalTest.questions = questions;
             }
             catch(Exception e)
             {
                 return BadRequest(e);
             }
 
-            return Ok(test);
+            return Ok(finalTest);
         }
 
         [HttpPost]
