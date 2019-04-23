@@ -9,7 +9,7 @@ using WebAPI.Utils;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/courses")]
     public class CourseController : Controller
     {
         private readonly DatabaseContext _db;
@@ -56,6 +56,7 @@ namespace WebAPI.Controllers
         {
             try
             {
+                course.isActive = true;
                 _db.Course.Add(course);
                 _db.SaveChanges();
             }

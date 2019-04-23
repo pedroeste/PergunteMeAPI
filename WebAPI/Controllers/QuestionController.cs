@@ -13,7 +13,7 @@ using WebAPI.ViewModel;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/questions")]
     public class QuestionController : Controller
     {
         private IConfiguration _configuration;
@@ -77,6 +77,8 @@ namespace WebAPI.Controllers
                     }
                 }
 
+                createQuestion.alternatives.isActive = true;
+                createQuestion.question.isActive = true;
                 _db.Alternative.Add(createQuestion.alternatives);
                 _db.SaveChanges();
 

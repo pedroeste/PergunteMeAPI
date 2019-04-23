@@ -10,7 +10,7 @@ using WebAPI.ViewModel;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/subjects")]
     public class SubjectController : Controller
     {
         private readonly DatabaseContext _db;
@@ -57,6 +57,7 @@ namespace WebAPI.Controllers
         {
             try
             {
+                subject.isActive = true;
                 _db.Subject.Add(subject);
                 _db.SaveChanges();
             }

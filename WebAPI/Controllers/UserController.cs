@@ -9,7 +9,7 @@ using WebAPI.ViewModel;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/users")]
     public class UserController : Controller
     {
         private readonly DatabaseContext _db;

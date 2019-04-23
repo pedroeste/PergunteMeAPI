@@ -11,5 +11,6 @@ namespace WebAPI.Models
         [Key]
         public int id { get; set; }
         public string Name { get; set; }
+        public bool isActive { get; set; }
     }
 }

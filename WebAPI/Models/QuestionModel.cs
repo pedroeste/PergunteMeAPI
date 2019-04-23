@@ -17,6 +17,7 @@ namespace WebAPI.Models
         public string  dificulty { get; set; }
         public int alternativeId { get; set; }
         public int subjectId { get; set; }
+        public bool isActive { get; set; }
 
         [ForeignKey("alternativeId")]
         public virtual AlternativeModel Alternative { get; set; }

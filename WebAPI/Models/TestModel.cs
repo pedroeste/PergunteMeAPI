@@ -12,5 +12,6 @@ namespace WebAPI.Models
         public int id { get; set; }
         public string name { get; set; }
         public DateTime dueDate { get; set; }
+        public bool isActive { get; set; }
     }
 }

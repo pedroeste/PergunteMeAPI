@@ -13,6 +13,7 @@ namespace WebAPI.Models
         public int id { get; set; }
         public string name { get; set; }
         public int schoolId { get; set; }
+        public bool isActive { get; set; }
 
         [ForeignKey("schoolId")]
         public virtual SchoolModel School { get; set; } // virtual       

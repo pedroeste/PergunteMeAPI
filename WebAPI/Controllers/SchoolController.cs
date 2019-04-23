@@ -8,7 +8,7 @@ using WebAPI.Utils;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/schools")]
     public class SchoolController : Controller
     {
         private readonly DatabaseContext _db;
@@ -55,6 +55,7 @@ namespace WebAPI.Controllers
         {
             try
             {
+                school.isActive = true;
                 _db.School.Add(school);
                 _db.SaveChanges();
             }

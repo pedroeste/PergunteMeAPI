@@ -15,5 +15,6 @@ namespace WebAPI.Models
         public string alternative3 { get; set; }
         public string alternative4 { get; set; }
         public string alternative5 { get; set; }
+        public bool isActive { get; set; }
     }
 }

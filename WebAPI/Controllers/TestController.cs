@@ -9,7 +9,7 @@ using WebAPI.ViewModel;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/tests")]
     public class TestController : Controller
     {
         private readonly DatabaseContext _db;
@@ -69,6 +69,7 @@ namespace WebAPI.Controllers
         {
             try
             {
+                test.isActive = true;
                 _db.Test.Add(test);
                 _db.SaveChanges();
 
@@ -93,15 +94,6 @@ namespace WebAPI.Controllers
                     _db.TestQuestion.Add(testQuestion);
                     _db.SaveChanges();
                 }
-
-
-                //while(questions.Count < 30)
-                //{
-                //    Random random = new Random();
-                //    int num = random.Next(questionsDb.Count());
-
-                //    if (questions.FindIndex(c => c.id == num) == -1) { questions.Add(questionsDb.First(c => c.id == num); }
-                //}                
             }
             catch(Exception e)
             {
