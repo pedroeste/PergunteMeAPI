@@ -76,8 +76,8 @@ namespace WebAPI.Controllers
 
             try
             {
-                subject.name = subject.name;
                 _db.Subject.Update(subject);
+                _db.SaveChanges();
             }
             catch(Exception e)
             {
@@ -105,7 +105,7 @@ namespace WebAPI.Controllers
                 return BadRequest(e);
             }
 
-            return Ok(subject);
+            return Ok("Deleted");
         }
 
         [HttpPost]
