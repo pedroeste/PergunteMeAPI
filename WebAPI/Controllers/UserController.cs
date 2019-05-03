@@ -59,7 +59,7 @@ namespace WebAPI.Controllers
             }
             catch(Exception e)
             {
-                return StatusCode(500, "Internal Server Error! Contact API supervisor!");
+                return StatusCode(500, "Internal Server Error! Contact API supervisor! => " + e);
             }
 
             return Ok(teacher);
@@ -71,6 +71,7 @@ namespace WebAPI.Controllers
         {
             try
             {
+                user.password = new EncryptionService().Encrypt(user.password);
                 user.isActive = true;
                 _db.User.Add(user);
                 _db.SaveChanges();
@@ -91,6 +92,7 @@ namespace WebAPI.Controllers
 
             try
             {
+                user.password = new EncryptionService().Encrypt(user.password);
                 _db.User.Update(user);
                 _db.SaveChanges();
 
