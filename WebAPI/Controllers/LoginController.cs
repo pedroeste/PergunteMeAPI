@@ -54,7 +54,7 @@ namespace WebAPI.Controllers
                 var claims = new[]
                 {
                     new Claim(ClaimTypes.Name, userBd.email),
-                    new Claim(ClaimTypes.Role, userBd.isAdmin.ToString())
+                    new Claim(ClaimTypes.Role, userBd.isAdmin ? "admin" : "teacher")
                 };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SecurityKey"]));
