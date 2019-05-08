@@ -79,6 +79,7 @@ namespace WebAPI
             app.UseCors(options => {
                 options.AllowAnyOrigin();
                 options.AllowAnyMethod();
+                options.AllowAnyHeader();
             });
 
             if (env.IsDevelopment())
