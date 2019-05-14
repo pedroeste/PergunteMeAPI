@@ -8,7 +8,7 @@ namespace WebAPI.ViewModel
 {
     public class SubjectQuestionViewModel
     {
-        public SubjectModel subject { get; set; }
+        public int subjectId { get; set; }
         public int questionsNumber { get; set; }
     }
 }

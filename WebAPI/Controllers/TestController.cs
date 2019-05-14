@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using WebAPI.Models;
 using WebAPI.Utils;
 using WebAPI.ViewModel;
@@ -49,7 +50,7 @@ namespace WebAPI.Controllers
                 List<QuestionModel> questions = new List<QuestionModel>();
                 foreach (var question in testQuestions)
                 {
-                    QuestionModel quest = _db.Question.Find(question.questionId);
+                    QuestionModel quest = _db.Question.Include(q => q.Alternative).Include(q => q.Subject).Where(q => q.id == question.questionId).FirstOrDefault();
                     questions.Add(quest);
                 }
 
@@ -71,24 +72,27 @@ namespace WebAPI.Controllers
                 testParam.test.isActive = true;
                 _db.Test.Add(testParam.test);
                 _db.SaveChanges();
-
-                // Para cada disciplina selecionada
+                List<QuestionModel> questionsDb = new List<QuestionModel>();
                 List<QuestionModel> questions = new List<QuestionModel>();
-                foreach (var subject in testParam.testTopics)
+
+                foreach (var subject in testParam.subjectsList)
                 {
-                    List<QuestionModel> questionsDb = new List<QuestionModel>();
-
                     // Pega todas as perguntas daquela disciplina e coloca em uma lista
-                    var questionDb = _db.Question.Where(q => q.subjectId == subject.subject.id).ToList();
-                    questionsDb.Concat(questionDb);
-
+                    List<QuestionModel> questionSubject = _db.Question.Where(q => q.subjectId == subject.subjectId).ToList();
+                    questionsDb.AddRange(questionSubject);
+                }
+                foreach (var subject in testParam.subjectsList)
+                {
                     // Para cada disciplina, uma pergunta é selecionada aleatoriamente de acordo com o total de perguntas pré-definido para aquela disciplina
                     for (int i = 0; i < subject.questionsNumber; i++)
                     {
+                        List<QuestionModel> questionSubject = questionsDb.Where(p => p.subjectId == subject.subjectId).ToList();
+
                         Random random = new Random();
-                        int num = random.Next(questionsDb.Count());
-                        questions.Add(questionsDb.Where(p => p == questionsDb[num]).FirstOrDefault());
-                        questionsDb.RemoveAt(num);
+                        int num = random.Next(questionSubject.Count() - 1);
+
+                        questions.Add(questionSubject.Where(p => p == questionsDb[num]).FirstOrDefault());
+                        questionSubject.RemoveAt(num);
                     }
 
                 }
@@ -104,7 +108,11 @@ namespace WebAPI.Controllers
                     _db.SaveChanges();
                 }
 
-                return Ok(testParam.test);
+                FinalTestViewModel ft = new FinalTestViewModel();
+                ft.questions = questions;
+                ft.test = testParam.test;
+
+                return Ok(ft);
             }
             catch(Exception e)
             {
