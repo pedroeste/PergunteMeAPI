@@ -51,7 +51,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("create")]
         public IActionResult Create([FromBody] CourseModel course)
         {
             try
@@ -62,14 +61,13 @@ namespace WebAPI.Controllers
             }
             catch(Exception e)
             {
-                return BadRequest(e);
+                return StatusCode(400, e);
             }
 
             return Ok(course);            
         }
 
-        [HttpPost]
-        [Route("update")]
+        [HttpPut]
         public IActionResult Update([FromBody] CourseModel course)
         {
             if (course == null || course.id == 0) return BadRequest();
@@ -87,8 +85,7 @@ namespace WebAPI.Controllers
             return Ok(course);
         }
 
-        [HttpPost]
-        [Route("delete/{id}")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             CourseModel course = _db.Course.Find(id);
@@ -105,7 +102,7 @@ namespace WebAPI.Controllers
                 return BadRequest(e);
             }
 
-            return Ok("Deleted");
+            return Ok();
         }
 
     }

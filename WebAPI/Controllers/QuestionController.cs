@@ -58,7 +58,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("create")]
         public IActionResult Create([FromBody] CreateQuestionAlternative createQuestion, IFormFile document = null)
         {
             try
@@ -97,8 +96,7 @@ namespace WebAPI.Controllers
             return StatusCode(201, createQuestion);
         }
 
-        [HttpPost]
-        [Route("update")]
+        [HttpPut]
         public IActionResult Update([FromBody] QuestionModel question, IFormFile document)
         {
             if (question == null || question.id == 0) return BadRequest();
@@ -130,8 +128,7 @@ namespace WebAPI.Controllers
             return Ok(question);
         }
 
-        [HttpPost]
-        [Route("delete/{id}")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             QuestionModel question = _db.Question.Find(id);
@@ -148,7 +145,7 @@ namespace WebAPI.Controllers
                 return BadRequest(e);
             }
 
-            return Ok("Deleted");
+            return Ok();
         }
     }
 }

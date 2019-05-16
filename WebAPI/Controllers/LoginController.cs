@@ -31,7 +31,8 @@ namespace WebAPI.Controllers
             var user = _db.User.Where(u => u.email == email).FirstOrDefault();
             if (user != null)
             {
-                string comparePassword = new EncryptionService().Decrypt(user.password);
+                // Melhorar método de validação de login
+                string comparePassword = user.password; // new EncryptionService().Decrypt(user.password);
                 string loginPassword = password; // new EncryptionService().Decrypt(password);
 
                 if (comparePassword == loginPassword)
@@ -45,7 +46,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("login")]
         public IActionResult Login([FromBody] LoginViewModel user)
         {
             UserModel userBd = AuthLogin(user.email, user.password);

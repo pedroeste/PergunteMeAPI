@@ -66,7 +66,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("create")]
         public IActionResult Create([FromBody] UserModel user)
         {
             try
@@ -84,8 +83,7 @@ namespace WebAPI.Controllers
             return Ok(user);
         }
 
-        [HttpPost]
-        [Route("update")]
+        [HttpPut]
         public IActionResult Update([FromBody] UserModel user)
         {
             if (user == null || user.id == 0) return BadRequest();
@@ -104,8 +102,7 @@ namespace WebAPI.Controllers
             }            
         }
 
-        [HttpPost]
-        [Route("delete/{id}")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             UserModel user = _db.User.Find(id);
@@ -122,7 +119,7 @@ namespace WebAPI.Controllers
                 return BadRequest(e);
             }
 
-            return Ok("Deleted");
+            return Ok();
         }
     }
 }

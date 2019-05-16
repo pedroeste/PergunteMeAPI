@@ -50,7 +50,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("create")]
         public IActionResult Create([FromBody] SchoolModel school)
         {
             try
@@ -67,8 +66,7 @@ namespace WebAPI.Controllers
             return Ok(school);
         }
 
-        [HttpPost]
-        [Route("update")]
+        [HttpPut]
         public IActionResult Update([FromBody] SchoolModel school)
         {
             if (school == null || school.id == 0) return BadRequest();
@@ -86,8 +84,7 @@ namespace WebAPI.Controllers
             return Ok(school);
         }
 
-        [HttpPost]
-        [Route("delete/{id}")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             SchoolModel school = _db.School.Find(id);
@@ -104,7 +101,7 @@ namespace WebAPI.Controllers
                 return BadRequest(e);
             }
 
-            return Ok("Deleted");
+            return Ok();
         }
 
     }

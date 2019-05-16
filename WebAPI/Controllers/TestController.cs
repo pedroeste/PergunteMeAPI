@@ -120,47 +120,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost]
-        [Route("create")]
-        public IActionResult Create([FromBody] TestViewModel testOptions)
-        {
-            try
-            {
-                testOptions.test.isActive = true;
-                _db.Test.Add(testOptions.test);
-                _db.SaveChanges();
-
-                List<QuestionModel> questionsDb = _db.Question.ToList();
-                List<QuestionModel> questions = new List<QuestionModel>();
-
-                for (int i = 0; i < testOptions.totalQuestions; i++)
-                {
-                    Random random = new Random();
-                    int num = random.Next(questionsDb.Count());
-                    questions.Add(questionsDb.Where(p => p == questionsDb[num]).FirstOrDefault());
-                    questionsDb.RemoveAt(num);
-                }
-
-                foreach(var question in questions)
-                {
-                    TestQuestionModel testQuestion = new TestQuestionModel();
-                    testQuestion.questionId = question.id;
-                    testQuestion.testId = testOptions.test.id;
-
-                    _db.TestQuestion.Add(testQuestion);
-                    _db.SaveChanges();
-                }
-            }
-            catch(Exception e)
-            {
-                return BadRequest(e);
-            }
-
-            return StatusCode(201, testOptions.test);
-        }
-
-        [HttpPost]
-        [Route("update")]
+        [HttpPut]
         public IActionResult Update([FromBody] TestModel test)
         {
             if (test == null || test.id == 0) return BadRequest();
@@ -178,8 +138,7 @@ namespace WebAPI.Controllers
             return Ok(test);
         }
 
-        [HttpPost]
-        [Route("delete/{id}")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             TestModel test = _db.Test.Find(id);
@@ -196,7 +155,7 @@ namespace WebAPI.Controllers
                 return BadRequest(e);
             }
 
-            return Ok("Deleted");
+            return Ok();
         }
     }
 }

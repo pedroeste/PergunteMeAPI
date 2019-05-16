@@ -52,7 +52,6 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        [Route("create")]
         public IActionResult Create([FromBody] SubjectModel subject)
         {
             try
@@ -69,7 +68,7 @@ namespace WebAPI.Controllers
             return Ok(subject);
         }
 
-        [HttpPost("update")]
+        [HttpPut]
         public IActionResult Update([FromBody] SubjectModel subject)
         {
             if (subject == null || subject.id != subject.id) return BadRequest();
@@ -87,8 +86,7 @@ namespace WebAPI.Controllers
             return Ok("Updated");
         }
 
-        [HttpPost]
-        [Route("delete/{id}")]
+        [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             var subject = _db.Subject.Find(id);
@@ -105,7 +103,7 @@ namespace WebAPI.Controllers
                 return BadRequest(e);
             }
 
-            return Ok("Deleted");
+            return Ok();
         }
 
         [HttpPost]
