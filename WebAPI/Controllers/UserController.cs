@@ -70,7 +70,7 @@ namespace WebAPI.Controllers
         {
             try
             {
-                user.password = new EncryptionService().Encrypt(user.password);
+                // user.password = new EncryptionService().Encrypt(user.password);
                 user.isActive = true;
                 _db.User.Add(user);
                 _db.SaveChanges();

@@ -13,6 +13,7 @@ namespace WebAPI.Models
         public string cpf { get; set; }
         public string name { get; set; }
         public string password { get; set; }
+        public string ra { get; set; }
         public string email { get; set; }
         public string phone { get; set; }
         public bool isAdmin { get; set; }

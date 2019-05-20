@@ -26,9 +26,9 @@ namespace WebAPI.Controllers
             _db = db;
         }
 
-        public UserModel AuthLogin(string email, string password)
+        public UserModel AuthLogin(string ra, string password)
         {
-            var user = _db.User.Where(u => u.email == email).FirstOrDefault();
+            var user = _db.User.Where(u => u.ra == ra).FirstOrDefault();
             if (user != null)
             {
                 // Melhorar método de validação de login
@@ -48,13 +48,14 @@ namespace WebAPI.Controllers
         [HttpPost]
         public IActionResult Login([FromBody] LoginViewModel user)
         {
-            UserModel userBd = AuthLogin(user.email, user.password);
+            UserModel userBd = AuthLogin(user.ra, user.password);
             if (userBd != null)
             {
                 var claims = new[]
                 {
-                    new Claim(ClaimTypes.Name, userBd.email),
-                    new Claim(ClaimTypes.Role, userBd.isAdmin ? "admin" : "teacher")
+                    new Claim("name", userBd.name),
+                    new Claim("ra", userBd.ra),
+                    new Claim("role", userBd.isAdmin ? "admin" : "teacher")
                 };
 
                 var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["SecurityKey"]));
