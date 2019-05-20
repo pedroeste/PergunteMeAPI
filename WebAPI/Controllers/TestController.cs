@@ -65,7 +65,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Generate([FromBody] TestViewModel testParam)
+        public IActionResult Create([FromBody] TestViewModel testParam)
         {
             try
             {
@@ -83,15 +83,23 @@ namespace WebAPI.Controllers
                 }
                 foreach (var subject in testParam.subjectsList)
                 {
+                    List<QuestionModel> questionSubject = questionsDb.Where(p => p.subjectId == subject.subjectId).ToList();
+
                     // Para cada disciplina, uma pergunta é selecionada aleatoriamente de acordo com o total de perguntas pré-definido para aquela disciplina
                     for (int i = 0; i < subject.questionsNumber; i++)
                     {
-                        List<QuestionModel> questionSubject = questionsDb.Where(p => p.subjectId == subject.subjectId).ToList();
-
                         Random random = new Random();
-                        int num = random.Next(questionSubject.Count() - 1);
+                        int num;
+                        if (questionSubject.Count() > 1)
+                        {
+                            num = random.Next(questionSubject.Count() - 1);
+                        } else
+                        {
+                            num = random.Next(questionSubject.Count());
+                        }                        
 
                         questions.Add(questionSubject.Where(p => p == questionsDb[num]).FirstOrDefault());
+                        questionsDb.Remove(questionSubject[num]);
                         questionSubject.RemoveAt(num);
                     }
 

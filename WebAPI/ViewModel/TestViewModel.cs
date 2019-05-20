@@ -8,7 +8,7 @@ namespace WebAPI.ViewModel
 {
     public class TestViewModel
     {
-        public TestModel  test { get; set; }
+        public TestModel test { get; set; }
         public IEnumerable<SubjectQuestionViewModel> subjectsList { get; set; }
     }
 }
