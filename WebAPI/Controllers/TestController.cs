@@ -69,43 +69,47 @@ namespace WebAPI.Controllers
         {
             try
             {
-                testParam.test.isActive = true;
-                _db.Test.Add(testParam.test);
-                _db.SaveChanges();
+                // Lista com todas as perguntas de todas as disciplinas demandadas
                 List<QuestionModel> questionsDb = new List<QuestionModel>();
+
+                // Lista de perguntas aleatórias selecionadas
                 List<QuestionModel> questions = new List<QuestionModel>();
 
                 foreach (var subject in testParam.subjectsList)
                 {
-                    // Pega todas as perguntas daquela disciplina e coloca em uma lista
+                    // Lista de perguntas de cada disciplina
                     List<QuestionModel> questionSubject = _db.Question.Where(q => q.subjectId == subject.subjectId).ToList();
                     questionsDb.AddRange(questionSubject);
                 }
                 foreach (var subject in testParam.subjectsList)
                 {
-                    List<QuestionModel> questionSubject = questionsDb.Where(p => p.subjectId == subject.subjectId).ToList();
-
-                    // Para cada disciplina, uma pergunta é selecionada aleatoriamente de acordo com o total de perguntas pré-definido para aquela disciplina
+                    // Lista de perguntas de cada disciplina
+                    List<QuestionModel> questionSubject = questionsDb.Where(q => q.subjectId == subject.subjectId).ToList();
+                    
                     for (int i = 0; i < subject.questionsNumber; i++)
                     {
                         Random random = new Random();
-                        int num;
-                        if (questionSubject.Count() > 1)
-                        {
-                            num = random.Next(questionSubject.Count() - 1);
-                        } else
-                        {
-                            num = random.Next(questionSubject.Count());
-                        }                        
+                        int num = random.Next(questionSubject.Count);
 
-                        questions.Add(questionSubject.Where(p => p == questionsDb[num]).FirstOrDefault());
+                        var randomSubjectQuestion = questionSubject[num];
+
+                        // Adiciona pergunta na lista de perguntas aleatorias selecionadas
+                        questions.Add(randomSubjectQuestion);
+
+                        // Remove a pergunta selecionada da lista de perguntas
                         questionsDb.Remove(questionSubject[num]);
+
+                        // Remove a pergunta selecionada da lista de perguntas por disciplina
                         questionSubject.RemoveAt(num);
                     }
 
                 }
 
-                // Adiciona as perguntas do Exame na model de json final
+                testParam.test.isActive = true;
+                _db.Test.Add(testParam.test);
+                _db.SaveChanges();
+
+                // Cria relacionamento entre pergunta e teste
                 foreach (var question in questions)
                 {
                     TestQuestionModel testQuestion = new TestQuestionModel();
@@ -116,6 +120,7 @@ namespace WebAPI.Controllers
                     _db.SaveChanges();
                 }
 
+                // Adiciona as perguntas do Exame na model de json final
                 FinalTestViewModel ft = new FinalTestViewModel();
                 ft.questions = questions;
                 ft.test = testParam.test;

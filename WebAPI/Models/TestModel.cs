@@ -11,7 +11,7 @@ namespace WebAPI.Models
         [Key]
         public int id { get; set; }
         public string name { get; set; }
-        public DateTime dueDate { get; set; }
+        public string dueDate { get; set; }
         public bool isActive { get; set; }
     }
 }
