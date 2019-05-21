@@ -30,7 +30,7 @@ namespace WebAPI.Controllers
             IEnumerable<QuestionModel> questions;
             try
             {
-                questions = _db.Question.Include(s => s.Subject).Include(a => a.Alternative).ToList();
+                questions = _db.Question.Include(s => s.Subject).ToList();
             }
             catch(Exception e)
             {
@@ -46,7 +46,7 @@ namespace WebAPI.Controllers
             QuestionModel question;
             try
             {
-                question = _db.Question.Include(s => s.Subject).Include(a => a.Alternative).Where(q => q.id == id).FirstOrDefault();
+                question = _db.Question.Include(s => s.Subject).Where(q => q.id == id).FirstOrDefault();
                 if (question == null) return NotFound($"Question with id ${id} not found!");
             }
             catch(Exception e)
@@ -58,7 +58,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CreateQuestionAlternative createQuestion, IFormFile document = null)
+        public IActionResult Create([FromBody] QuestionModel createQuestion, IFormFile document = null)
         {
             try
             {
@@ -72,20 +72,15 @@ namespace WebAPI.Controllers
                         var uploadSuccess = bs.CreateBlob(document.FileName, document.ContentType, fileBytes);
                         string blob = uploadSuccess.Result;
 
-                        createQuestion.question.imgUrl = blob;
+                        createQuestion.imgUrl = blob;
                     }
                 }
+                
+                createQuestion.isActive = true;
 
-                createQuestion.alternatives.isActive = true;
-                createQuestion.question.isActive = true;
-                _db.Alternative.Add(createQuestion.alternatives);
-                _db.SaveChanges();
+                createQuestion.Subject = _db.Subject.Find(createQuestion.subjectId);
 
-                createQuestion.question.alternativeId = createQuestion.alternatives.id;
-                createQuestion.question.Alternative = _db.Alternative.Find(createQuestion.alternatives.id);
-                createQuestion.question.Subject = _db.Subject.Find(createQuestion.question.subjectId);
-
-                _db.Question.Add(createQuestion.question);
+                _db.Question.Add(createQuestion);
                 _db.SaveChanges();
             }
             catch(Exception e)

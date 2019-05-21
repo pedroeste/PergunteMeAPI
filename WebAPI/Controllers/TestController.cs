@@ -50,7 +50,7 @@ namespace WebAPI.Controllers
                 List<QuestionModel> questions = new List<QuestionModel>();
                 foreach (var question in testQuestions)
                 {
-                    QuestionModel quest = _db.Question.Include(q => q.Alternative).Include(q => q.Subject).Where(q => q.id == question.questionId).FirstOrDefault();
+                    QuestionModel quest = _db.Question.Include(q => q.Subject).Where(q => q.id == question.questionId).FirstOrDefault();
                     questions.Add(quest);
                 }
 
