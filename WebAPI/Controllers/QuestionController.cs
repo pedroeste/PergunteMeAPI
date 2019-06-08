@@ -114,5 +114,25 @@ namespace WebAPI.Controllers
 
             return Ok();
         }
+
+        [HttpGet]
+        [Route("subjects")]
+        public IActionResult BySubject()
+        {
+            IEnumerable<SubjectModel> subjects = _db.Subject.ToList();
+            IEnumerable<QuestionsBySubjectViewModel> questionsBySubjects = Enumerable.Empty<QuestionsBySubjectViewModel>();
+
+            foreach(var subject in subjects)
+            {
+                IEnumerable<QuestionModel> questions = _db.Question.Where(q => q.subjectId == subject.id).ToList();
+                QuestionsBySubjectViewModel qbs = new QuestionsBySubjectViewModel();
+                qbs.count = questions.Count();
+                qbs.subject = subject.name;
+
+                questionsBySubjects.Append(qbs);
+            }
+
+            return Ok(questionsBySubjects);
+        }
     }
 }
