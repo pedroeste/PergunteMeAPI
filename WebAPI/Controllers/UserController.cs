@@ -83,7 +83,7 @@ namespace WebAPI.Controllers
             return Ok(user);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult Update([FromBody] UserModel user)
         {
             if (user == null || user.id == 0) return BadRequest();

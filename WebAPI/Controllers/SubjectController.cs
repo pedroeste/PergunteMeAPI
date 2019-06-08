@@ -68,7 +68,7 @@ namespace WebAPI.Controllers
             return Ok(subject);
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult Update([FromBody] SubjectModel subject)
         {
             if (subject == null || subject.id != subject.id) return BadRequest();

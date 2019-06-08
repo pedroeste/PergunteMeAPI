@@ -133,7 +133,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult Update([FromBody] TestModel test)
         {
             if (test == null || test.id == 0) return BadRequest();

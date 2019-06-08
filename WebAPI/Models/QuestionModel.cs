@@ -24,6 +24,8 @@ namespace WebAPI.Models
         public string alternative4 { get; set; }
         public string alternative5 { get; set; }
 
+        public string correctAlternative { get; set; }
+
         [ForeignKey("subjectId")]
         public virtual SubjectModel Subject { get; set; }
 

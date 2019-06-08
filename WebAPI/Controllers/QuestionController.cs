@@ -32,7 +32,7 @@ namespace WebAPI.Controllers
             {
                 questions = _db.Question.Include(s => s.Subject).ToList();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return BadRequest(e);
             }
@@ -49,7 +49,7 @@ namespace WebAPI.Controllers
                 question = _db.Question.Include(s => s.Subject).Where(q => q.id == id).FirstOrDefault();
                 if (question == null) return NotFound($"Question with id ${id} not found!");
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return BadRequest(e);
             }
@@ -58,24 +58,10 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] QuestionModel createQuestion, IFormFile document = null)
+        public IActionResult Create([FromBody] QuestionModel createQuestion)
         {
             try
             {
-                if (document != null)
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        document.CopyTo(ms);
-                        var fileBytes = ms.ToArray();
-                        BlobStorageService bs = new BlobStorageService(_configuration);
-                        var uploadSuccess = bs.CreateBlob(document.FileName, document.ContentType, fileBytes);
-                        string blob = uploadSuccess.Result;
-
-                        createQuestion.imgUrl = blob;
-                    }
-                }
-                
                 createQuestion.isActive = true;
 
                 createQuestion.Subject = _db.Subject.Find(createQuestion.subjectId);
@@ -83,7 +69,7 @@ namespace WebAPI.Controllers
                 _db.Question.Add(createQuestion);
                 _db.SaveChanges();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 return BadRequest(e);
             }
@@ -91,27 +77,13 @@ namespace WebAPI.Controllers
             return StatusCode(201, createQuestion);
         }
 
-        [HttpPut]
-        public IActionResult Update([FromBody] QuestionModel question, IFormFile document)
+        [HttpPut("{id}")]
+        public IActionResult Update([FromBody] QuestionModel question)
         {
             if (question == null || question.id == 0) return BadRequest();
 
             try
             {
-                if (document != null)
-                {
-                    using (var ms = new MemoryStream())
-                    {
-                        document.CopyTo(ms);
-                        var fileBytes = ms.ToArray();
-                        BlobStorageService bs = new BlobStorageService(_configuration);
-                        var uploadSuccess = bs.CreateBlob(document.FileName, document.ContentType, fileBytes);
-                        string blob = uploadSuccess.Result;
-
-                        question.imgUrl = blob;
-                    }
-                }
-
                 _db.Question.Update(question);
                 _db.SaveChanges();
             }

@@ -67,7 +67,7 @@ namespace WebAPI.Controllers
             return Ok(course);            
         }
 
-        [HttpPut]
+        [HttpPut("{id}")]
         public IActionResult Update([FromBody] CourseModel course)
         {
             if (course == null || course.id == 0) return BadRequest();
