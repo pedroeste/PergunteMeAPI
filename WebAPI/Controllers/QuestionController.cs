@@ -58,10 +58,24 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] QuestionModel createQuestion)
+        public IActionResult Create([FromBody] QuestionModel createQuestion, IFormFile document)
         {
             try
             {
+                if (document != null)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        document.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+                        BlobStorageService bs = new BlobStorageService(_configuration);
+                        var uploadSuccess = bs.CreateBlob(document.FileName, document.ContentType, fileBytes);
+                        string blob = uploadSuccess.Result;
+
+                        createQuestion.imgUrl = blob;
+                    }
+                }
+
                 createQuestion.isActive = true;
 
                 createQuestion.Subject = _db.Subject.Find(createQuestion.subjectId);
@@ -78,12 +92,26 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update([FromBody] QuestionModel question)
+        public IActionResult Update([FromBody] QuestionModel question, IFormFile document)
         {
             if (question == null || question.id == 0) return BadRequest();
 
             try
             {
+                if (document != null)
+                {
+                    using (var ms = new MemoryStream())
+                    {
+                        document.CopyTo(ms);
+                        var fileBytes = ms.ToArray();
+                        BlobStorageService bs = new BlobStorageService(_configuration);
+                        var uploadSuccess = bs.CreateBlob(document.FileName, document.ContentType, fileBytes);
+                        string blob = uploadSuccess.Result;
+
+                        question.imgUrl = blob;
+                    }
+                }
+
                 _db.Question.Update(question);
                 _db.SaveChanges();
             }

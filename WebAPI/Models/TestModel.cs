@@ -13,5 +13,7 @@ namespace WebAPI.Models
         public string name { get; set; }
         public string dueDate { get; set; }
         public bool isActive { get; set; }
+
+        public string docxUrl { get; set; }
     }
 }
