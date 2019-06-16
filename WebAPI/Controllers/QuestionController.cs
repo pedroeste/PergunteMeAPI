@@ -40,6 +40,25 @@ namespace WebAPI.Controllers
             return Ok(questions);
         }
 
+        [HttpPost]
+        [Route("bysubjectid")]
+        public IActionResult GetBySubjectId([FromBody] SubjectIdParamViewModel param)
+        {
+            List<QuestionSubjectIdViewModel> questionBySubjectId = new List<QuestionSubjectIdViewModel>();
+
+            foreach(var id in param.ids)
+            {
+                int questionsNumber = _db.Question.Where(q => q.subjectId == id).Count();
+
+                QuestionSubjectIdViewModel qst = new QuestionSubjectIdViewModel();
+                qst.subjectId = id;
+                qst.questionCount = questionsNumber;
+
+                questionBySubjectId.Add(qst);
+            }
+            return Ok(questionBySubjectId);
+        }
+
         [HttpGet("{id}")]
         public IActionResult Get(int id)
         {
